@@ -1,11 +1,15 @@
 import React from 'react'
 
-function ImageGalleryItem() {
+function ImageGalleryItem({data, onOpenModal}) {
   return (
-    <li class="gallery-item">
-    <img src="" alt="" />
-    !!!image!!!
-  </li>
+    <></>
+  // <li className="gallery-item">
+  //   <img src="" alt="" />
+  //   !!!image!!!
+  //   <button onClick={() => onOpenModal()}>
+  //     OPEN MODAL
+  //   </button>
+  // </li>
   )
 }
 
