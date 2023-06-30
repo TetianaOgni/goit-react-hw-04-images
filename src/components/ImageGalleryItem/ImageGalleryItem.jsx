@@ -3,10 +3,12 @@ import React from 'react'
 function ImageGalleryItem({data, onOpenModal}) {
   console.log(3, data.hits)
   const {hits} = data
+  if (hits.length === 0){
+    return <div>There are no images available for your request</div>
+  }
   return (
    <ul>
        {hits.map(({id, webformatURL, largeImageURL, tags})=>{
-      console.log(id, webformatURL, largeImageURL, tags)
       return ( 
       <li
         key={id} 
