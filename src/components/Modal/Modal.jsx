@@ -8,10 +8,6 @@ class Modal extends Component {
     window.addEventListener('keydown', this.handleKeyDown)
 }
 
-componentDidUpdate(){
-    console.log('ttt')
-}
-
 componentWillUnmount(){
    
     window.removeEventListener('keydown', this.handleKeyDown)
@@ -32,6 +28,8 @@ handleOverlayClick=(event)=>{
 }
 
   render(){
+    const {largeImageURL, tags} = this.props.visibleData
+    console.log(6,largeImageURL, tags)
     return (
       <>
       {/* <div class="overlay">
@@ -42,8 +40,7 @@ handleOverlayClick=(event)=>{
     </div> */}
         <StyledOverlay onClick={this.handleOverlayClick}>
         <StyledModal>
-         MODAL
-         <img src="" alt="" />
+         <img src={largeImageURL} alt={tags} />
         </StyledModal>
       </StyledOverlay>
       </>

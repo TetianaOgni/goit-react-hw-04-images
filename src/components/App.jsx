@@ -1,11 +1,11 @@
 import React, {Component} from "react";
-// import {ToastContainer} from 'react-toastify'
 import Searchbar from "./Searchbar/Searchbar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Modal from "./Modal/Modal";
-import Button from "./Button/Button";
-import Loader from "./Loader/Loader";
-// import { getPicture } from "services/getPictures";
+// import Button from "./Button/Button";
+// import Loader from "./Loader/Loader";
+
+
 
 class App extends Component{
   state = {
@@ -15,13 +15,9 @@ class App extends Component{
   handleSearch=(searchQuery)=>{
     this.setState({searchQuery})
   }
-  // componentDidMount(){
-  //   fetch()
-  // }
-
 
   onOpenModal = data => {
-    console.log(1, 'open')
+    console.log(1, 'open', data)
     this.setState({
       modal: {
         isOpen: true,
@@ -44,11 +40,10 @@ class App extends Component{
       <div>
        <Searchbar handleSearch={this.handleSearch}/>
        <ImageGallery searchQuery={this.state.searchQuery} handleSearch={this.handleSearch} onOpenModal={this.onOpenModal} />
-       {/* <ToastContainer /> */}
-
       {this.state.modal.isOpen && <Modal visibleData={this.state.modal.visibleData} onCloseModal={this.onCloseModal}/>}        
-       <Button/>
-       <Loader/>
+       {/* <Button/> */}
+       {/* <Loader/> */}
+      
       </div>
     );
   }
