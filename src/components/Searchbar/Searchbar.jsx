@@ -1,7 +1,19 @@
 import React, {Component} from 'react'
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import {ImSearch} from 'react-icons/im'
 import css from './Searchbar.module.css'
+
+const toastConfig = {
+  position: "top-center",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "light",
+  };
+
 
 class Searchbar extends Component{
   state={
@@ -19,8 +31,9 @@ handleChange=(event) => {
   handleSubmit=(event)=> {
     event.preventDefault()
     if (this.state.value.trim() === '') {
-      alert('Please enter the text.')
+      // alert('Please enter the text.')
       // toast.error('Error Notification !', {
+        toast.info('Please enter the text.', toastConfig)
      
       return;
     }

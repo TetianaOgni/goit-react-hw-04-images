@@ -1,9 +1,11 @@
 import React from 'react'
 
-function Button() {
+function Button({name, onClick}) {
   return (
     <div>
-      <button>Button</button>
+      <button type='button' onClick={onClick}>
+        {name}
+      </button>
     </div>
   )
 }

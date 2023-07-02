@@ -13,7 +13,7 @@ const toastConfig = {
   };
 
 function ImageGalleryItem({data, onOpenModal}) {
-  console.log(3, data.hits)
+  // console.log(3, data.hits)
   const {hits} = data
   if (hits.length === 0){
     toast.success('There are no images available for your request', toastConfig)
