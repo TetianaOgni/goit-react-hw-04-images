@@ -48,7 +48,7 @@ class App extends Component{
        <Searchbar handleSearch={this.handleSearch}/>
        <ImageGallery searchQuery={searchQuery} page={page} handleLoadMore={this.handleLoadMore} handleSearch={this.handleSearch} onOpenModal={this.onOpenModal} />
       {this.state.modal.isOpen && <Modal visibleData={modal.visibleData} onCloseModal={this.onCloseModal}/>}        
-       <Button /> 
+      <Button name='Load more' onClick={this.handleLoadMore}/>
        <Loader/>
       
       </div>
