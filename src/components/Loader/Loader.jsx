@@ -5,7 +5,6 @@ function Loader() {
 
   }
   return (
-   
       <div style={styles.spinner}>
           <ImSpinner size='32' className='icon-spin'/>
           Loading...

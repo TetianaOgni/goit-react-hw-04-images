@@ -12,9 +12,10 @@ const toastConfig = {
   theme: "light",
   };
 
-function ImageGalleryItem({data, onOpenModal}) {
-  // console.log(3, data.hits)
-  const {hits} = data
+function ImageGalleryItem({hits, onOpenModal}) {
+  // console.log(4, hits)
+  // const {hits} = data
+  // console.log('hits.length', hits.length)
   if (hits.length === 0){
     toast.success('There are no images available for your request', toastConfig)
   }
