@@ -18,7 +18,6 @@ const toastConfig = {
   progress: undefined,
   theme: "light",
   };
-  let resolve = 0
 class App extends Component{
   state = {
     modal:{isOpen: false, visibleData: null},
@@ -40,9 +39,14 @@ class App extends Component{
     const prevPage = prevState.page
     const nextPage = this.state.page
     console.log("prevPage, nextPage", prevPage, nextPage)
-
+  if(prevQuery !== nextQuery){
+    console.log('только слово изменилось')
+    this.setState({ images:[],totalHits: 0, status: 'pending'})
+   }
    if(prevQuery !== nextQuery || prevPage !== nextPage){
-  this.setState({ images:[], totalHits: 0, status: 'pending'})
+    console.log('или слово или страница изменилась')
+  this.setState({  totalHits: 0, status: 'pending'})
+     
    try {
     const {hits, total} = await fetchImages(nextQuery, nextPage)
     this.setState(prevState => ({
@@ -61,8 +65,10 @@ class App extends Component{
    }finally{
     this.setState({isLoading: false})
    } 
-  }
 
+ 
+  }
+  // , totalHits: 0, status: 'pending'
 
     // if(prevQuery !== nextQuery){
     //   this.setState({ images:[], isLoading: true,})

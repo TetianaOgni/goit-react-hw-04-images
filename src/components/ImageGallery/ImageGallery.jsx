@@ -1,14 +1,16 @@
 import React from 'react'
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem'
-
+// import { ImageGalleryList } from './styled'
 function ImageGallery({data, onOpenModal}){
   return (
-<ul className="gallery">
-  <ImageGalleryItem  hits={data} onOpenModal={onOpenModal}/>
-</ul>
+  <ul className="gallery">
+    <ImageGalleryItem  hits={data} onOpenModal={onOpenModal}/>
+  </ul>
   )
 }
-
+/* <ImageGalleryList className="gallery">
+  <ImageGalleryItem  hits={data} onOpenModal={onOpenModal}/>
+</ImageGalleryList> */
   export default ImageGallery
 
 
