@@ -7,7 +7,6 @@ import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-
     <App />
     <ToastContainer position="top-center"
 autoClose={5000}

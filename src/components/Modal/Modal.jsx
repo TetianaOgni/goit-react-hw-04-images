@@ -13,6 +13,7 @@ componentWillUnmount(){
     window.removeEventListener('keydown', this.handleKeyDown)
 
 }
+
 handleKeyDown=(event)=>{
   if(event.code === "Escape"){
     this.props.onCloseModal()
