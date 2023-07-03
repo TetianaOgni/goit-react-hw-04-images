@@ -21,11 +21,10 @@ const toastConfig = {
 class App extends Component{
   state = {
     modal:{isOpen: false, visibleData: null},
-    button: {hidden: false}, 
+    // button: {hidden: false}, 
     searchQuery: '',
     page: 1,
     images: [],
-    isLoading: false,
     error: null,
     status: 'idle',
     totalHits: 0,
@@ -41,34 +40,56 @@ class App extends Component{
     console.log("prevPage, nextPage", prevPage, nextPage)
   if(prevQuery !== nextQuery){
     console.log('только слово изменилось')
-    this.setState({ images:[],totalHits: 0, status: 'pending'})
+    this.setState({ images:[], totalHits: 0, status: 'pending'})
    }
    if(prevQuery !== nextQuery || prevPage !== nextPage){
     console.log('или слово или страница изменилась')
-  this.setState({  totalHits: 0, status: 'pending'})
+  // this.setState({ status: 'pending'})
+
      
    try {
     const {hits, total} = await fetchImages(nextQuery, nextPage)
+    console.log(total)
+    this.setState({ 
+      totalHits: total,
+  })
+   console.log("first total", this.state.totalHits)
     this.setState(prevState => ({
       images:[...prevState.images,...hits],
       status: 'resolved',
-      totalHits: total,
-      loadMore: this.state.page < Math.ceil(this.state.totalHits / 12 ),
+      // totalHits: total,
+      // loadMore: this.state.page < Math.ceil(this.state.totalHits / 12 ),
     }))
-    console.log("loadMore", this.state.loadMore)
+    this.setState({ 
+      totalHits: total,
+    }, () => {
+      this.setState(prevState => ({
+        loadMore: prevState.page < Math.ceil(this.state.totalHits / 12),
+      }));
+    });
+
+    
+
+    // this.setState(prevState => ({
+     
+    //   status: 'resolved',
+    //   totalHits: total,
+    //   loadMore: this.state.page < Math.ceil(this.state.totalHits / 12 ),
+    // }))
+    console.log("loadMore", this.state.loadMore, total, this.state.totalHits)
     // console.log(2, hits) 
     // console.log(3,  this.state.images) 
    }catch(error) {
       this.setState({ error, status: 'rejected'})
       toast.error(error.message, toastConfig)
-  
-   }finally{
-    this.setState({isLoading: false})
-   } 
+   }
+  //  }finally{
+  //   this.setState({loadMore: false})
+  //   console.log("finally loadMore:", this.state.loadMore )
+  //  } 
 
  
   }
-  // , totalHits: 0, status: 'pending'
 
     // if(prevQuery !== nextQuery){
     //   this.setState({ images:[], isLoading: true,})
@@ -117,10 +138,11 @@ class App extends Component{
          visibleData: null
         }}) 
       }
-
-  render(){
-    const {totalHits, status, searchQuery, page, modal, images, isLoading, error} = this.state
     
+  render(){
+    const {totalHits, status, searchQuery, page, modal, images, loadMore,} = this.state
+    console.log("totalHits", totalHits)
+    console.log("loadMore render", this.state.loadMore)
     if (status === 'idle') {
           return <Searchbar handleSearch={this.handleSearch}/>
         }
@@ -143,7 +165,7 @@ class App extends Component{
         onOpenModal={this.onOpenModal}
         />
        {this.state.modal.isOpen && <Modal visibleData={modal.visibleData} onCloseModal={this.onCloseModal}/>}
-       {totalHits > 12 && <Button name='Load more' onClick={this.handleLoadMore}/>}
+       {loadMore === true && <Button name='Load more' onClick={this.handleLoadMore}/>}
     </> )
     }} 
   }
