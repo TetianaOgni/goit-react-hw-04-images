@@ -1,13 +1,20 @@
 import React from 'react'
+import PropTypes from "prop-types";
+import {ButtonStyled } from './styled'
 
 function Button({name, onClick}) {
   return (
     <div>
-      <button type='button' onClick={onClick}>
+      <ButtonStyled type='button' onClick={onClick}>
         {name}
-      </button>
+      </ButtonStyled>
     </div>
   )
 }
 
+Button.propTypes = {
+ name: PropTypes.string.isRequired,
+   onClick: PropTypes.func,
+  };
+  
 export default Button

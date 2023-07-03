@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import PropTypes from "prop-types";
 import { toast } from 'react-toastify';
 import {ImSearch} from 'react-icons/im'
 import css from './Searchbar.module.css'
@@ -16,13 +17,9 @@ const toastConfig = {
 
 
 class Searchbar extends Component{
-  state={
-    value: ''
+  state = {
+    value: '',
   }
-//   handleChange=({target:{value}}) => {  
-//     this.setState({value})
-// }
-
 
 handleChange=(event) => {  
   this.setState({value: event.currentTarget.value.toLowerCase()})
@@ -31,8 +28,7 @@ handleChange=(event) => {
   handleSubmit=(event)=> {
     event.preventDefault()
     if (this.state.value.trim() === '') {
-      // alert('Please enter the text.')
-      // toast.error('Error Notification !', {
+    
         toast.info('Please enter the text.', toastConfig)
      
       return;
@@ -65,5 +61,8 @@ handleChange=(event) => {
   }
 
 }
+Searchbar.propTypes = {
+ value: PropTypes.string,
+};
 
 export default Searchbar

@@ -1,35 +1,31 @@
 import React from 'react'
-import { toast} from 'react-toastify'
+import PropTypes from "prop-types";
+import {ImageGalleryItemStyled, ImageGalleryItemImage } from './styled'
 
-const toastConfig = {
-  position: "top-center",
-  autoClose: 5000,
-  hideProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-  progress: undefined,
-  theme: "light",
-  };
+
 
 function ImageGalleryItem({hits, onOpenModal}) {
-  // console.log(4, hits)
-  // const {hits} = data
-  // console.log('hits.length', hits.length)
-  if (hits.length === 0){
-    toast.success('There are no images available for your request', toastConfig)
-  }
   return (
-   <ul>
+   <>
        {hits.map(({id, webformatURL, largeImageURL, tags})=>{
       return ( 
-      <li
+      <ImageGalleryItemStyled
         key={id} 
         className="gallery-item">
-         <img src={webformatURL} alt={tags} onClick={() => onOpenModal({largeImageURL, tags})}/>
-         </li>) 
+         <ImageGalleryItemImage src={webformatURL} alt={tags} onClick={() => onOpenModal({largeImageURL, tags})}/>
+         </ImageGalleryItemStyled>) 
        })}
-  </ul>)
+  </>)
 }
+ImageGalleryItem.propTypes = {
+hits: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      webformatURL: PropTypes.string.isRequired,
+      tags: PropTypes.string.isRequired,
+      largeImageURL: PropTypes.string.isRequired,
+    })).isRequired,
+    onOpenModal: PropTypes.func.isRequired,
+  }
 
 export default ImageGalleryItem

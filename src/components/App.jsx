@@ -1,11 +1,12 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 import {toast} from 'react-toastify'
 import Searchbar from "./Searchbar/Searchbar";
 import ImageGallery from "./ImageGallery/ImageGallery";
-
 import Modal from "./Modal/Modal";
 import Button from "./Button/Button";
 import Loader from "./Loader/Loader";
+import PhotoError from "./ImageGalleryError/ImageGalleryError"
 import {fetchImages} from '../services/getImages'
 
 const toastConfig = {
@@ -18,100 +19,46 @@ const toastConfig = {
   progress: undefined,
   theme: "light",
   };
+
 class App extends Component{
   state = {
-    modal:{isOpen: false, visibleData: null},
-    // button: {hidden: false}, 
+    modal:{isOpen: false, visibleData: null}, 
     searchQuery: '',
     page: 1,
     images: [],
     error: null,
     status: 'idle',
-    totalHits: 0,
     loadMore: false,
   };
   
   async componentDidUpdate(prevProps, prevState){
+
     const prevQuery = prevState.searchQuery
     const nextQuery = this.state.searchQuery
-     console.log("prevQuery, nextQuery:", prevQuery, nextQuery)
     const prevPage = prevState.page
     const nextPage = this.state.page
-    console.log("prevPage, nextPage", prevPage, nextPage)
-  if(prevQuery !== nextQuery){
-    console.log('только слово изменилось')
-    this.setState({ images:[], totalHits: 0, status: 'pending'})
-   }
-   if(prevQuery !== nextQuery || prevPage !== nextPage){
-    console.log('или слово или страница изменилась')
-  // this.setState({ status: 'pending'})
 
-     
+  if(prevQuery !== nextQuery){
+    this.setState({ images:[], status: 'pending'})
+  }
+
+   if(prevQuery !== nextQuery || prevPage !== nextPage){
+  
    try {
     const {hits, total} = await fetchImages(nextQuery, nextPage)
-    console.log(total)
-    this.setState({ 
-      totalHits: total,
-  })
-   console.log("first total", this.state.totalHits)
+    if (hits.length === 0){
+      toast.success('There are no images available for your request', toastConfig)
+    }
     this.setState(prevState => ({
       images:[...prevState.images,...hits],
+      loadMore: prevState.page < Math.ceil(total / 12),
       status: 'resolved',
-      // totalHits: total,
-      // loadMore: this.state.page < Math.ceil(this.state.totalHits / 12 ),
     }))
-    this.setState({ 
-      totalHits: total,
-    }, () => {
-      this.setState(prevState => ({
-        loadMore: prevState.page < Math.ceil(this.state.totalHits / 12),
-      }));
-    });
-
-    
-
-    // this.setState(prevState => ({
-     
-    //   status: 'resolved',
-    //   totalHits: total,
-    //   loadMore: this.state.page < Math.ceil(this.state.totalHits / 12 ),
-    // }))
-    console.log("loadMore", this.state.loadMore, total, this.state.totalHits)
-    // console.log(2, hits) 
-    // console.log(3,  this.state.images) 
    }catch(error) {
       this.setState({ error, status: 'rejected'})
       toast.error(error.message, toastConfig)
    }
-  //  }finally{
-  //   this.setState({loadMore: false})
-  //   console.log("finally loadMore:", this.state.loadMore )
-  //  } 
-
- 
   }
-
-    // if(prevQuery !== nextQuery){
-    //   this.setState({ images:[], isLoading: true,})
-       
-    //    try {
-    //     const {hits} = await fetchImages(nextQuery )
-    //     this.setState(prevState => ({
-    //       images:[...prevState.images,...hits],
-    //      status: 'resolved',
-    //     }))
-    //     console.log(2, hits) 
-    //     console.log(3,  this.state.images) 
-
-    //    }catch(error) {
-    //       this.setState({ error})
-    //       toast.error(error.message, toastConfig)
-      
-    //    }finally{
-    //     this.setState({isLoading: false})
-    //    } 
-    //   }
-
   }
 
   handleSearch=(searchQuery)=>{
@@ -123,7 +70,6 @@ class App extends Component{
   };
 
   onOpenModal = data => {
-    console.log(1, 'open', data)
     this.setState({
       modal: {
         isOpen: true,
@@ -140,9 +86,8 @@ class App extends Component{
       }
     
   render(){
-    const {totalHits, status, searchQuery, page, modal, images, loadMore,} = this.state
-    console.log("totalHits", totalHits)
-    console.log("loadMore render", this.state.loadMore)
+    const { status, searchQuery, page, modal, images, loadMore, error} = this.state
+  
     if (status === 'idle') {
           return <Searchbar handleSearch={this.handleSearch}/>
         }
@@ -154,81 +99,51 @@ class App extends Component{
       </>
       )  
     }
-  
-        if (status === 'resolved'){
+    if (status === 'rejected') {
+      return (
+      <>
+      <Searchbar handleSearch={this.handleSearch}/>
+      <PhotoError message={error.message}/>
+      </>
+      )
+  }
+      
+    if (status === 'resolved'){
       return (
       <>
        <Searchbar handleSearch={this.handleSearch}/>
-        <ImageGallery data={images} searchQuery={searchQuery} page={page} 
+        {images.length > 0 &&<ImageGallery 
+        data={images} 
+        searchQuery={searchQuery}
+        page={page} 
         handleLoadMore={this.handleLoadMore}
         handleSearch={this.handleSearch}
         onOpenModal={this.onOpenModal}
-        />
+        />}
        {this.state.modal.isOpen && <Modal visibleData={modal.visibleData} onCloseModal={this.onCloseModal}/>}
        {loadMore === true && <Button name='Load more' onClick={this.handleLoadMore}/>}
     </> )
     }} 
   }
+
+  App.propTypes = {
+    modal: PropTypes.arrayOf(
+      PropTypes.shape({
+        isOpen: PropTypes.bool.isRequired,
+        visibleData: PropTypes.shape({
+          largeImageURL: PropTypes.string.isRequired,
+          tags: PropTypes.string.isRequired,
+        }).isRequired,
+      })),
+    searchQuery: PropTypes.string,
+    page:  PropTypes.number,
+    images: PropTypes.array,
+    error: PropTypes.any,
+    status: PropTypes.oneOf(['idle', 'pending', 'resolved', 'rejected']),
+    loadMore: PropTypes.bool,
+    };
+   
+
 export default App
 
 
-// {images.length > 0 && (<ImageGallery data={images} searchQuery={searchQuery} page={page} handleLoadMore={this.handleLoadMore} handleSearch={this.handleSearch} onOpenModal={this.onOpenModal} />)}
-
-// if(prevQuery !== nextQuery){
-//   this.setState({ images:[], status: 'pending'})
-   
-//    try {
-//     const {hits} = await fetchImages(nextQuery )
-//     this.setState(prevState => ({
-//       images:[...prevState.images,...hits],
-//       status: 'resolved',
-//     }))
-//     console.log(2, hits) 
-//     console.log(3,  this.state.images) 
-
-//    }catch(error) {
-//       this.setState({ error, status: 'rejected'})
-//       toast.error(error.message, toastConfig)
-  
-//    }finally{
-//     this.setState({isLoading: false})
-//    } 
-//   }
-
-// if (status === 'idle') {
-    //   return <Searchbar handleSearch={this.handleSearch}/>
-    // }
-    // if (status === 'pending') {
-    //   return (
-    //   <>
-    //   <Searchbar handleSearch={this.handleSearch}/>
-    //   <Loader/>
-    //   </>
-    //   )  
-    // }
-    // if (status === 'rejected') {
-    //   return <PhotoError message={error.message}/>
-    // }
-        // if (status === 'resolved'){
-    //   return (
-    //   <>
-    //    <Searchbar handleSearch={this.handleSearch}/>
-    //     <ImageGallery data={images} searchQuery={searchQuery} page={page} 
-    //     handleLoadMore={this.handleLoadMore}
-    //     handleSearch={this.handleSearch}
-    //     onOpenModal={this.onOpenModal}
-    //     />
-    //   {this.state.modal.isOpen && <Modal visibleData={modal.visibleData} onCloseModal={this.onCloseModal}/>}        
-    //   </> )
-    // }
-// ----------
-// return (
-    //   <div>
-    //   <Searchbar handleSearch={this.handleSearch}/>
-    //   {status === 'resolved' && <ImageGallery data={images} searchQuery={searchQuery} page={page} handleLoadMore={this.handleLoadMore} handleSearch={this.handleSearch} onOpenModal={this.onOpenModal} />}
-    //   {this.state.modal.isOpen && <Modal visibleData={modal.visibleData} onCloseModal={this.onCloseModal}/>}        
-    //   <Button name='Load more' bntonClick={this.handleLoadMore}/>
-    //    {isLoading && <Loader/>}
-      
-    //   </div>
-    // );
