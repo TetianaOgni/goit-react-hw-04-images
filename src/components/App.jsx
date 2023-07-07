@@ -34,24 +34,25 @@ useEffect(() => {
   if (!searchQuery) {
     return;
   }
-  setStatus('pending');
   setImages([]);
+  setStatus('pending');
 
   try {
-    const {hits, total} = await fetchImages(searchQuery, page)
+    const {hits, total} =  await fetchImages(searchQuery, page)
     if (hits.length === 0){
       toast.success('There are no images available for your request', toastConfig)
     }
-   
-    setImages(prevImages => [...prevImages, ...hits])  
+ 
+    setImages(()=> [...images, ...hits])  
     setLoadMore(page < Math.ceil(total / 12))
+    
     setStatus('resolved')
    }catch(error) {
       setError(error)
       setStatus('rejected')
       toast.error(error.message, toastConfig)
    }
-}
+  }
    fetchData()
  }, [searchQuery, page]);
 
@@ -101,6 +102,7 @@ const  handleLoadMore = () => {
     }
         
       if (status === 'resolved'){
+        console.log(images)
         return (
         <>
          <Searchbar handleSearch={handleSearch}/>
@@ -118,7 +120,6 @@ const  handleLoadMore = () => {
       }
     } 
     
-  
     App.propTypes = {
       modal: PropTypes.arrayOf(
         PropTypes.shape({
@@ -138,3 +139,4 @@ const  handleLoadMore = () => {
 
  export default App
 
+ 
