@@ -6,8 +6,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  // <React.StrictMode>
-  <>
+  <React.StrictMode>
     <App />
     <ToastContainer position="top-center"
 autoClose={5000}
@@ -19,6 +18,6 @@ pauseOnFocusLoss
 draggable
 pauseOnHover
 theme="light"/>
-{/* // </React.StrictMode> */}
-</>
+</React.StrictMode>
+
 );

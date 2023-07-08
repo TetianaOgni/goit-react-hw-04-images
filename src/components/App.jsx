@@ -42,8 +42,7 @@ useEffect(() => {
     if (hits.length === 0){
       toast.success('There are no images available for your request', toastConfig)
     }
- 
-    setImages(()=> [...images, ...hits])  
+    setImages([...images, ...hits])  
     setLoadMore(page < Math.ceil(total / 12))
     
     setStatus('resolved')
@@ -54,6 +53,7 @@ useEffect(() => {
    }
   }
    fetchData()
+// eslint-disable-next-line
  }, [searchQuery, page]);
 
   
