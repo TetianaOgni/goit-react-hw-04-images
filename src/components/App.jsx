@@ -102,7 +102,6 @@ const  handleLoadMore = () => {
     }
         
       if (status === 'resolved'){
-        console.log(images)
         return (
         <>
          <Searchbar handleSearch={handleSearch}/>
